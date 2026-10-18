@@ -1,0 +1,63 @@
+{
+  "name": "arses-desktop",
+  "productName": "ARSES",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ARSES desktop game catalog and personal library",
+  "author": "ARSES",
+  "main": "electron/main.cjs",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "prepare:renderer": "node scripts/prepare-renderer.mjs",
+    "start": "npm run prepare:renderer && electron .",
+    "test": "node --test tests/*.test.cjs",
+    "check": "node --check electron/main.cjs && node --check scripts/prepare-renderer.mjs && npm test",
+    "build:ui": "vite build --config vite.config.mjs && node scripts/prepare-renderer.mjs --built",
+    "dist:win": "npm run prepare:renderer && npm run check && electron-builder --win nsis --x64",
+    "dist:win:from-source": "npm run build:ui && npm run check && electron-builder --win nsis --x64",
+    "pack:win": "npm run prepare:renderer && npm run check && electron-builder --win dir --x64"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "radix-ui": "^1.4.3",
+    "lucide-react": "^0.577.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "^26.0.12",
+    "vite": "^6.1.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-animate": "^1.0.7",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3"
+  },
+  "build": {
+    "appId": "com.arses.desktop",
+    "productName": "ARSES",
+    "asar": true,
+    "directories": { "output": "release", "buildResources": "build" },
+    "files": ["electron/main.cjs", "renderer/dist/**/*", "package.json", "THIRD_PARTY.md"],
+    "artifactName": "ARSES-Setup-${version}-${arch}.${ext}",
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "build/icon.ico",
+      "executableName": "ARSES",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ARSES",
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}
